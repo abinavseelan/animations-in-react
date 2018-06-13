@@ -1,15 +1,29 @@
 import React, { Component } from 'react';
 import { Motion, spring } from 'react-motion';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faPlus from '@fortawesome/fontawesome-free-solid/faPlus';
+import faSmile from '@fortawesome/fontawesome-free-solid/faSmile';
+import faMeh from '@fortawesome/fontawesome-free-solid/faMeh';
+import faFrown from '@fortawesome/fontawesome-free-solid/faFrown';
 
-const initialStyle = {
-    opacity: 0,
-    x: 0,
-    y: 0,
-}
+const menuItems = [
+    {
+        id: 0,
+        icon: faSmile
+    },
+    {
+        id: 1,
+        icon: faMeh
+    },
+    {
+        id: 2,
+        icon: faFrown
+    },
+]
 
 function calculatePosition(i, num) {
     const angle = (i + 1) * (180 / (num + 1));
-    const length = 125;
+    const length = 350;
     const radianFactor = Math.PI / 180;
 
     return {
@@ -93,11 +107,11 @@ class Demo2 extends Component {
         return (
             <div className="container">
                 {
-                    typeof this.state.open !== 'undefined' && [0, 1, 2].map((value, index) => (
+                    typeof this.state.open !== 'undefined' && menuItems.map((value, index) => (
                         <Motion
                             defaultStyle={calculateInitialStyle(this.state.open, index, 3)}
                             style={calculateFinalStyle(this.state.open, index, 3)}
-                            key={value}
+                            key={value.id}
                         >
                             {
                                 interpolatedStyles => (
@@ -106,13 +120,40 @@ class Demo2 extends Component {
                                         style={{
                                             transform: `translate3d(${interpolatedStyles.x}px, -${interpolatedStyles.y}px, 0)`
                                         }}
-                                    />
+                                    >
+                                        <FontAwesomeIcon className="inverse" icon={value.icon} />
+                                    </div>
                                 )
                             }
                         </Motion>
                     ))
                 }
-                <div className="menu-btn" onClick={this.toggleMenu} />
+                {
+                    <Motion
+                        defaultStyle={this.state.open ? { o: 0 } : { o: 45 }}
+                        style={this.state.open ? { o: spring(45) } : { o: spring(0) }}
+                    >
+                        {
+                            styles => (
+                                <div
+                                    style={{
+                                        transform: `rotate(${styles.o}deg)`
+                                    }}
+                                    className="menu-btn"
+                                    onClick={this.toggleMenu}
+                                >
+                                    {
+                                        console.log(styles.o)
+                                    }
+                                    <FontAwesomeIcon
+                                        className="inverse"
+                                        icon={faPlus}
+                                    />
+                                </div>
+                            )
+                        }
+                    </Motion>
+                }
             </div>
         );
     }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { StaggeredMotion, spring } from 'react-motion';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faStream from '@fortawesome/fontawesome-free-solid/faStream'
 
 class Demo3 extends Component {
   constructor(props) {
@@ -83,7 +85,12 @@ class Demo3 extends Component {
               ))
             )
         }
-        <button onClick={this.dismiss}>Dismiss</button>
+        <button
+          onClick={this.dismiss}
+          className="dismiss-btn"
+        >
+          <FontAwesomeIcon icon={faStream} />
+        </button>
       </div>
     );
   }

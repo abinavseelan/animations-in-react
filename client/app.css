@@ -41,22 +41,45 @@ a:hover {
     background-color: #ee5253;
 }
 
+.inverse path {
+    fill: white;
+    color: white;
+}
+
+.menu-btn svg {
+    height: 50px;
+    width: 50px !important;
+}
+
+.menu-item svg {
+    height: 30px;
+    width: 30px !important;
+}
+
 .menu-btn {
     border-radius: 50%;
-    height: 100px;
-    width: 100px;
+    height: 200px;
+    width: 200px;
 
     background-color: #5f27cd;
     cursor: pointer;
     position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .menu-item {
     border-radius: 50%;
-    height: 50px;
-    width: 50px;
+    height: 100px;
+    width: 100px;
     will-change: transform, opacity;
     position: absolute;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     background-color: #1dd1a1;
     cursor: pointer;
@@ -79,4 +102,14 @@ a:hover {
     border-radius: 8px;
     background-color: white;
     will-change: transform, opacity;
+}
+
+.dismiss-btn {
+    border-radius: 50%;
+    border: none;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.3);
 }
