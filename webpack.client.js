@@ -19,16 +19,12 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, "dist"),
         compress: true,
+        historyApiFallback: true,
         port: 9000,
         open: true,
         hot: true,
         inline: true,
         stats: "errors-only",
-        proxy: {
-            "*": {
-                target: "http://localhost:9001",
-            }
-        }
     },
 
     module: {
