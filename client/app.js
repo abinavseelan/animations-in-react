@@ -6,6 +6,7 @@ import Home from './Home';
 import Demo1 from './Demo1';
 import Demo2 from './Demo2';
 import Demo3 from './Demo3';
+import Demo4 from './Demo4';
 
 import './app.css';
 
@@ -24,6 +25,7 @@ class App extends Component {
                     <Route path="/demo-1" component={Demo1} />
                     <Route path="/demo-2" component={Demo2} />
                     <Route path="/demo-3" component={Demo3} />
+                    <Route path="/demo-4" component={Demo4} />
                 </Switch>
             </Router>
         );

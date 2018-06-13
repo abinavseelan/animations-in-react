@@ -40,3 +40,24 @@ a:hover {
     border-radius: 4px;
     background-color: #ee5253;
 }
+
+.menu-btn {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+
+    background-color: #5f27cd;
+    cursor: pointer;
+    position: absolute;
+}
+
+.menu-item {
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    will-change: transform, opacity;
+    position: absolute;
+
+    background-color: #1dd1a1;
+    cursor: pointer;
+}
