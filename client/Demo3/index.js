@@ -2,58 +2,91 @@ import React, { Component } from 'react';
 import { StaggeredMotion, spring } from 'react-motion';
 
 class Demo3 extends Component {
-    render() {
-        return (
-            <StaggeredMotion
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dimissed: false
+    };
+
+    this.dismiss = this.dismiss.bind(this);
+  }
+
+  dismiss(e) {
+    e.preventDefault();
+
+    this.setState({
+      dismissed: true,
+    });
+  }
+
+  render() {
+    return (
+      <div className="demo-3-bg">
+        {
+          this.state.dismissed
+            ? (
+              <StaggeredMotion
                 defaultStyles={[
-                    {
-                        left: 0,
-                        opacity: 0,
-                    },
-                    {
-                        left: 0,
-                        opacity: 0
-                    },
-                    {
-                        left: 0,
-                        opacity: 0
-                    },
+                  {
+                    opacity: 1,
+                    x: 0
+                  },
+                  {
+                    opacity: 1,
+                    x: 0
+                  },
+                  {
+                    opacity: 1,
+                    x: 0
+                  }
                 ]}
-                styles={
-                    prevStyles => prevStyles.map((_, i) => {
-                        return i === 0
-                            ? {
-                                left: spring(window.innerWidth - 200, {
-                                    stiffness: 40,
-                                    dampening: 10,
-                                }),
-                                opacity: spring(1)
-                            }
-                            : { left: prevStyles[i - 1].left, opacity: prevStyles[i - 1].opacity }
+                styles={prevStyles => prevStyles.map((_, index) => {
+                  return index === 0
+                    ? ({
+                      opacity: spring(0, {
+                        stiffness: 40
+                      }),
+                      x: spring(window.innerWidth * 1.5, {
+                        stiffness: 40
+                      }),
                     })
-                }
-            >
+                    : ({
+                      opacity: prevStyles[index - 1].opacity / 1,
+                      x: prevStyles[index - 1].x / 1.25
+                    })
+                })}
+              >
                 {
-                    styles => (
-                        <div>
-                            {
-                                styles.map((style, index) => (
-                                    <div
-                                        key={index}
-                                        className="box"
-                                        style={{
-                                            top: `${300 * index}px`,
-                                            ...style
-                                        }}
-                                    />
-                                ))
-                            }
-                        </div>
-                    )
+                  interpolatedStyles => (
+                    <div>
+                      {
+                        interpolatedStyles.map((style, index) => (
+                          <div
+                            className="card"
+                            style={{
+                              transform: `translateX(${style.x}px)`,
+                              opacity: style.opacity,
+                            }}
+                            key={index}
+                          />
+                        ))
+                      }
+                    </div>
+                  )
                 }
-            </StaggeredMotion>
-        )
-    }
+              </StaggeredMotion>
+            )
+            : (
+              [0, 1, 2].map(cardNumber => (
+                <div className="card" key={cardNumber} />
+              ))
+            )
+        }
+        <button onClick={this.dismiss}>Dismiss</button>
+      </div>
+    );
+  }
 };
 
 export default Demo3;
