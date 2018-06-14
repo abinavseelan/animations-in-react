@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import contacts from './mock-details';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faTimes from '@fortawesome/fontawesome-free-solid/faTimes'
+
 
 const ListView = ({ contacts, onClick }) => (
     <div className="list-items">
@@ -20,7 +23,21 @@ const ListView = ({ contacts, onClick }) => (
 );
 
 const DetailView = ({ contact, onClick }) => (
-    <div className="item-details"></div>
+    <div className="item-details">
+        <div className="image-container">
+            <img src={contact.picture} />
+        </div>
+
+        <div className="contact-details">
+            <p><strong>Name:</strong> {`${contact.name.first} ${contact.name.last}`}</p>
+            <p><strong>Phone:</strong> {contact.phone}</p>
+            <p><strong>Address:</strong> {contact.address}</p>
+        </div>
+
+        <div className="back-btn">
+            <FontAwesomeIcon icon={faTimes} onClick={onClick} />
+        </div>
+    </div>
 );
 
 class Demo4 extends Component {
@@ -32,11 +49,12 @@ class Demo4 extends Component {
         }
 
         this.setCurrentContact = this.setCurrentContact.bind(this);
+        this.back = this.back.bind(this);
     }
 
     setCurrentContact(index) {
         this.setState({
-            currentContact: contact[index],
+            currentContact: contacts[index],
         });
     }
 
@@ -48,19 +66,25 @@ class Demo4 extends Component {
 
     render() {
         return (
-            this.currentContact
-                ? (
-                    // <DetailView
-                    //     contact={this.state.currentItem}
-                    // />
-                    null
-                )
-                : (
-                    <ListView
-                        contacts={contacts}
-                        onClick={this.setCurrentContact}
-                    />
-                )
+            <div className="demo-4-bg">
+                <div className="mobile-mock">
+                    {
+                        this.state.currentContact
+                            ? (
+                                <DetailView
+                                    contact={this.state.currentContact}
+                                    onClick={this.back}
+                                />
+                            )
+                            : (
+                                <ListView
+                                    contacts={contacts}
+                                    onClick={this.setCurrentContact}
+                                />
+                            )
+                    }
+                </div>
+            </div>
         )
     }
 };
