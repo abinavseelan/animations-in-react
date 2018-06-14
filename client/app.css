@@ -113,3 +113,40 @@ a:hover {
     background-color: white;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.3);
 }
+
+.list-items {
+    margin-top: 100px;
+}
+
+.list-item {
+    display: flex;
+    width: 100vh;
+
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.list-item:first-child {
+    border-top: 1px solid #eee;
+}
+
+.list-item img {
+    height: 60px;
+    width: 60px;
+
+    margin: 10px 20px;
+
+    border-radius: 50%;
+}
+
+.list-item h3, .list-item h4 {
+    margin: 0 20px;
+}
+
+.list-item h3 {
+    color: #212121;
+}
+
+.list-item h4 {
+    color: #aaa;
+}
