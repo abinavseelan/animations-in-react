@@ -48,11 +48,29 @@ const DetailView = ({ contact, onClick, currentContactPosition }) => (
             </Motion>
         </div>
 
-        <div className="contact-details">
-            <p><strong>Name:</strong> {`${contact.name.first} ${contact.name.last}`}</p>
-            <p><strong>Phone:</strong> {contact.phone}</p>
-            <p><strong>Address:</strong> {contact.address}</p>
-        </div>
+        <Motion
+            defaultStyle={{
+                opacity: 0,
+                y: 200
+            }}
+            style={{
+                opacity: spring(1),
+                y: spring(0),
+            }}
+        >
+            {
+                (style) => (
+                    <div className="contact-details" style={{
+                        opacity: style.opacity,
+                        transform: `translateY(${style.y}px)`
+                    }}>
+                        <p><strong>Name:</strong> {`${contact.name.first} ${contact.name.last}`}</p>
+                        <p><strong>Phone:</strong> {contact.phone}</p>
+                        <p><strong>Address:</strong> {contact.address}</p>
+                    </div>
+                )
+            }
+        </Motion>
 
         <div className="back-btn">
             <FontAwesomeIcon icon={faTimes} onClick={onClick} />
