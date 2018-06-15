@@ -8,9 +8,9 @@ const ListView = ({ contacts, onClick }) => (
     <div className="list-items">
         {
             contacts.map((contact, index) => (
-                <div className="list-item" key={contact._id} onClick={() => { onClick(index) }}>
+                <div className="list-item" key={contact._id}>
                     <div>
-                        <img src={contact.picture} />
+                        <img src={contact.picture} onClick={(event) => { onClick(event, index) }} />
                     </div>
                     <div>
                         <h3>{`${contact.name.first} ${contact.name.last}`}</h3>
@@ -52,7 +52,7 @@ class Demo4 extends Component {
         this.back = this.back.bind(this);
     }
 
-    setCurrentContact(index) {
+    setCurrentContact(event, index) {
         this.setState({
             currentContact: contacts[index],
         });

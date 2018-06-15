@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import contacts from './mock-details';
+import { Motion, spring } from 'react-motion';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faTimes from '@fortawesome/fontawesome-free-solid/faTimes'
 
@@ -8,9 +9,9 @@ const ListView = ({ contacts, onClick }) => (
     <div className="list-items">
         {
             contacts.map((contact, index) => (
-                <div className="list-item" key={contact._id} onClick={() => { onClick(index) }}>
+                <div className="list-item" key={contact._id}>
                     <div>
-                        <img src={contact.picture} />
+                        <img src={contact.picture} onClick={(event) => { onClick(event, index) }} />
                     </div>
                     <div>
                         <h3>{`${contact.name.first} ${contact.name.last}`}</h3>
@@ -22,10 +23,29 @@ const ListView = ({ contacts, onClick }) => (
     </div>
 );
 
-const DetailView = ({ contact, onClick }) => (
+const DetailView = ({ contact, onClick, currentContactPosition }) => (
     <div className="item-details">
         <div className="image-container">
-            <img src={contact.picture} />
+            <Motion
+                defaultStyle={currentContactPosition}
+                style={{
+                    top: spring(0),
+                    left: spring(0),
+                    width: spring(100),
+                    borderRadius: 0,
+                }}
+            >
+                {
+                    interpolatingStyles => (
+                        <img style={{
+                            top: interpolatingStyles.top,
+                            left: interpolatingStyles.left,
+                            borderRadius: interpolatingStyles.borderRadius,
+                            width: `${interpolatingStyles.width}%`,
+                        }} src={contact.picture} />
+                    )
+                }
+            </Motion>
         </div>
 
         <div className="contact-details">
@@ -52,9 +72,16 @@ class Demo4 extends Component {
         this.back = this.back.bind(this);
     }
 
-    setCurrentContact(index) {
+    setCurrentContact(event, index) {
+        const { target } = event;
+
         this.setState({
             currentContact: contacts[index],
+            currentContactPosition: {
+                top: target.offsetTop,
+                left: target.offsetLeft,
+                width: 60,
+            }
         });
     }
 
@@ -74,6 +101,7 @@ class Demo4 extends Component {
                                 <DetailView
                                     contact={this.state.currentContact}
                                     onClick={this.back}
+                                    currentContactPosition={this.state.currentContactPosition}
                                 />
                             )
                             : (

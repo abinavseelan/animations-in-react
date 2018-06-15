@@ -142,6 +142,7 @@ a:hover {
 .list-item img {
     height: 60px;
     width: 60px;
+    cursor: pointer;
 
     margin: 10px 20px;
 
@@ -182,8 +183,8 @@ a:hover {
 }
 
 .image-container img {
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    height: 100px;
 }
 
 .back-btn {
