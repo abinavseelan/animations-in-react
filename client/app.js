@@ -9,6 +9,7 @@ import Demo3 from './Final/Demo3';
 import Demo4 from './Final/Demo4';
 import Demo5 from './Final/Demo5';
 
+import LiveDemo2 from './Live/Demo2';
 import LiveDemo3 from './Live/Demo3';
 import LiveDemo4 from './Live/Demo4';
 
@@ -32,6 +33,7 @@ class App extends Component {
                     <Route path="/final/demo-4" component={Demo4} />
                     <Route path="/final/demo-5" component={Demo5} />
                     
+                    <Route path="/live/demo-2" component={LiveDemo2} />
                     <Route path="/live/demo-3" component={LiveDemo3} />
                     <Route path="/live/demo-4" component={LiveDemo4} />
                 </Switch>

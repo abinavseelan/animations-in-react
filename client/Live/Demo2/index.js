@@ -7,7 +7,7 @@ class Demo2 extends Component {
         super(props);
 
         this.state = {
-            dimissed: false
+            dismissed: false
         };
 
         this.dismiss = this.dismiss.bind(this);
