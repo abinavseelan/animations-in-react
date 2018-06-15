@@ -1,108 +1,138 @@
 import React, { Component } from 'react';
-import { StaggeredMotion, spring } from 'react-motion';
+import contacts from './mock-details';
+import { Motion, spring } from 'react-motion';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import faStream from '@fortawesome/fontawesome-free-solid/faStream'
+import faTimes from '@fortawesome/fontawesome-free-solid/faTimes'
 
 
-const AnimatingCards = () => (
-   <StaggeredMotion
-      defaultStyles={[
+const ListView = ({ contacts, onClick }) => (
+    <div className="list-items">
         {
-          opacity: 1,
-          x: 0
-        },
-        {
-          opacity: 1,
-          x: 0
-        },
-        {
-          opacity: 1,
-          x: 0
+            contacts.map((contact, index) => (
+                <div className="list-item" key={contact._id}>
+                    <div>
+                        <img src={contact.picture} onClick={(event) => { onClick(event, index) }} />
+                    </div>
+                    <div>
+                        <h3>{`${contact.name.first} ${contact.name.last}`}</h3>
+                        <h4>{contact.phone}</h4>
+                    </div>
+                </div>
+            ))
         }
-      ]}
-      styles={prevStyles => prevStyles.map((_, index) => {
-        return index === prevStyles.length - 1
-          ? ({
-            opacity: spring(0, {
-              stiffness: 40
-            }),
-            x: spring(window.innerWidth * 1.5, {
-              stiffness: 40
-            }),
-          })
-          : ({
-            opacity: prevStyles[index + 1].opacity / 1,
-            x: prevStyles[index + 1].x / 1.25
-          })
-      })}
-    >
-      {
-        interpolatedStyles => (
-          <div>
-            {
-              interpolatedStyles.map((style, index) => (
-                <div
-                  className="card"
-                  style={{
-                    transform: `translateX(${style.x}px)`,
-                    opacity: style.opacity,
-                  }}
-                  key={index}
-                />
-              ))
-            }
-          </div>
-        )
-      }
-    </StaggeredMotion>
-)
+    </div>
+);
 
-const Cards = () => (
-  [0, 1, 2].map(cardNumber => (
-    <div className="card" key={cardNumber} />
-  ))
-)
+const DetailView = ({ contact, onClick, currentContactPosition }) => (
+    <div className="item-details">
+        <div className="image-container">
+            <Motion
+                defaultStyle={currentContactPosition}
+                style={{
+                    top: spring(0),
+                    left: spring(0),
+                    width: spring(100),
+                    borderRadius: 0,
+                }}
+            >
+                {
+                    interpolatingStyles => (
+                        <img style={{
+                            top: interpolatingStyles.top,
+                            left: interpolatingStyles.left,
+                            borderRadius: interpolatingStyles.borderRadius,
+                            width: `${interpolatingStyles.width}%`,
+                        }} src={contact.picture} />
+                    )
+                }
+            </Motion>
+        </div>
+
+        <Motion
+            defaultStyle={{
+                opacity: 0,
+                y: 200
+            }}
+            style={{
+                opacity: spring(1),
+                y: spring(0),
+            }}
+        >
+            {
+                (style) => (
+                    <div className="contact-details" style={{
+                        opacity: style.opacity,
+                        transform: `translateY(${style.y}px)`
+                    }}>
+                        <p><strong>Name:</strong> {`${contact.name.first} ${contact.name.last}`}</p>
+                        <p><strong>Phone:</strong> {contact.phone}</p>
+                        <p><strong>Address:</strong> {contact.address}</p>
+                    </div>
+                )
+            }
+        </Motion>
+
+        <div className="back-btn">
+            <FontAwesomeIcon icon={faTimes} onClick={onClick} />
+        </div>
+    </div>
+);
 
 class Demo3 extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      dismissed: false
-    };
-
-    this.dismiss = this.dismiss.bind(this);
-  }
-
-  dismiss(e) {
-    e.preventDefault();
-
-    this.setState({
-      dismissed: true,
-    });
-  }
-
-  render() {
-    return (
-      <div className="demo-3-bg">
-        {
-          this.state.dismissed
-            ? (
-              <AnimatingCards />
-            )
-            : (
-              <Cards />
-            )
+        this.state = {
+            currentContact: null,
         }
-        <button
-          onClick={this.dismiss}
-          className="dismiss-btn"
-        >
-          <FontAwesomeIcon icon={faStream} />
-        </button>
-      </div>
-    );
-  }
+
+        this.setCurrentContact = this.setCurrentContact.bind(this);
+        this.back = this.back.bind(this);
+    }
+
+    setCurrentContact(event, index) {
+        const { target } = event;
+
+        this.setState({
+            currentContact: contacts[index],
+            currentContactPosition: {
+                top: target.offsetTop,
+                left: target.offsetLeft,
+                width: 60,
+            }
+        });
+    }
+
+    back() {
+        this.setState({
+            currentContact: null,
+        });
+    }
+
+    render() {
+        return (
+            <div className="demo-4-bg">
+                <div className="mobile-mock">
+                    {
+                        this.state.currentContact
+                            ? (
+                                <DetailView
+                                    contact={this.state.currentContact}
+                                    onClick={this.back}
+                                    currentContactPosition={this.state.currentContactPosition}
+                                />
+                            )
+                            : (
+                                <ListView
+                                    contacts={contacts}
+                                    onClick={this.setCurrentContact}
+                                />
+                            )
+                    }
+                </div>
+            </div>
+        )
+    }
 };
 
 export default Demo3;

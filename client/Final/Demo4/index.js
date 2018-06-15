@@ -1,137 +1,161 @@
 import React, { Component } from 'react';
-import contacts from './mock-details';
 import { Motion, spring } from 'react-motion';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import faTimes from '@fortawesome/fontawesome-free-solid/faTimes'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faPlus from '@fortawesome/fontawesome-free-solid/faPlus';
+import faSmile from '@fortawesome/fontawesome-free-solid/faSmile';
+import faMeh from '@fortawesome/fontawesome-free-solid/faMeh';
+import faFrown from '@fortawesome/fontawesome-free-solid/faFrown';
 
+const menuItems = [
+    {
+        id: 0,
+        icon: faSmile
+    },
+    {
+        id: 1,
+        icon: faMeh
+    },
+    {
+        id: 2,
+        icon: faFrown
+    },
+]
 
-const ListView = ({ contacts, onClick }) => (
-    <div className="list-items">
-        {
-            contacts.map((contact, index) => (
-                <div className="list-item" key={contact._id}>
-                    <div>
-                        <img src={contact.picture} onClick={(event) => { onClick(event, index) }} />
-                    </div>
-                    <div>
-                        <h3>{`${contact.name.first} ${contact.name.last}`}</h3>
-                        <h4>{contact.phone}</h4>
-                    </div>
-                </div>
-            ))
-        }
-    </div>
-);
+function calculatePosition(i, num) {
+    const angle = (i + 1) * (180 / (num + 1));
+    const length = 350;
+    const radianFactor = Math.PI / 180;
 
-const DetailView = ({ contact, onClick, currentContactPosition }) => (
-    <div className="item-details">
-        <div className="image-container">
-            <Motion
-                defaultStyle={currentContactPosition}
-                style={{
-                    top: spring(0),
-                    left: spring(0),
-                    width: spring(100),
-                    borderRadius: 0,
-                }}
-            >
-                {
-                    interpolatingStyles => (
-                        <img style={{
-                            top: interpolatingStyles.top,
-                            left: interpolatingStyles.left,
-                            borderRadius: interpolatingStyles.borderRadius,
-                            width: `${interpolatingStyles.width}%`,
-                        }} src={contact.picture} />
-                    )
-                }
-            </Motion>
-        </div>
+    return {
+        x: Math.cos(angle * radianFactor) * length,
+        y: Math.sin(angle * radianFactor) * length,
+    };
+}
 
-        <Motion
-            defaultStyle={{
-                opacity: 0,
-                y: 200
-            }}
-            style={{
-                opacity: spring(1),
-                y: spring(0),
-            }}
-        >
-            {
-                (style) => (
-                    <div className="contact-details" style={{
-                        opacity: style.opacity,
-                        transform: `translateY(${style.y}px)`
-                    }}>
-                        <p><strong>Name:</strong> {`${contact.name.first} ${contact.name.last}`}</p>
-                        <p><strong>Phone:</strong> {contact.phone}</p>
-                        <p><strong>Address:</strong> {contact.address}</p>
-                    </div>
-                )
-            }
-        </Motion>
+function calculateInitialStyle(openState, i, num) {
+    if (openState) {
+        return {
+            opacity: 0,
+            x: 0,
+            y: 0,
+        };
+    }
 
-        <div className="back-btn">
-            <FontAwesomeIcon icon={faTimes} onClick={onClick} />
-        </div>
-    </div>
-);
+    const { x, y } = calculatePosition(i, num);
+
+    return {
+        opacity: 1,
+        x,
+        y,
+    };
+}
+
+function calculateFinalStyle(openState, i, num) {
+    if (openState) {
+        const { x, y } = calculatePosition(i, num);
+
+        return {
+            opacity: spring(1),
+            x: spring(x, {
+                damping: 10,
+            }),
+            y: spring(y, {
+                damping: 10,
+            }),
+        };
+    }
+
+    return {
+        opacity: spring(0),
+        x: spring(0),
+        y: spring(0),
+    };
+}
 
 class Demo4 extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentContact: null,
-        }
+            open: undefined,
+        };
 
-        this.setCurrentContact = this.setCurrentContact.bind(this);
-        this.back = this.back.bind(this);
+        this.closeMenu = this.closeMenu.bind(this);
+        this.toggleMenu = this.toggleMenu.bind(this);
     }
 
-    setCurrentContact(event, index) {
-        const { target } = event;
-
+    closeMenu() {
         this.setState({
-            currentContact: contacts[index],
-            currentContactPosition: {
-                top: target.offsetTop,
-                left: target.offsetLeft,
-                width: 60,
-            }
+            open: false,
         });
+
+        window.removeEventListener('click', this.closeMenu);
     }
 
-    back() {
+    toggleMenu(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         this.setState({
-            currentContact: null,
+            open: true,
+        }, () => {
+            window.addEventListener('click', this.closeMenu);
         });
     }
 
     render() {
         return (
-            <div className="demo-4-bg">
-                <div className="mobile-mock">
-                    {
-                        this.state.currentContact
-                            ? (
-                                <DetailView
-                                    contact={this.state.currentContact}
-                                    onClick={this.back}
-                                    currentContactPosition={this.state.currentContactPosition}
-                                />
+            <div className="container">
+                {
+                    typeof this.state.open !== 'undefined' && menuItems.map((value, index) => (
+                        <Motion
+                            defaultStyle={calculateInitialStyle(this.state.open, index, 3)}
+                            style={calculateFinalStyle(this.state.open, index, 3)}
+                            key={value.id}
+                        >
+                            {
+                                interpolatedStyles => (
+                                    <div
+                                        className="menu-item"
+                                        style={{
+                                            transform: `translate3d(${interpolatedStyles.x}px, -${interpolatedStyles.y}px, 0)`
+                                        }}
+                                    >
+                                        <FontAwesomeIcon className="inverse" icon={value.icon} />
+                                    </div>
+                                )
+                            }
+                        </Motion>
+                    ))
+                }
+                {
+                    <Motion
+                        defaultStyle={this.state.open ? { o: 0 } : { o: 45 }}
+                        style={this.state.open ? { o: spring(45) } : { o: spring(0) }}
+                    >
+                        {
+                            styles => (
+                                <div
+                                    style={{
+                                        transform: `rotate(${styles.o}deg)`
+                                    }}
+                                    className="menu-btn"
+                                    onClick={this.toggleMenu}
+                                >
+                                    {
+                                        console.log(styles.o)
+                                    }
+                                    <FontAwesomeIcon
+                                        className="inverse"
+                                        icon={faPlus}
+                                    />
+                                </div>
                             )
-                            : (
-                                <ListView
-                                    contacts={contacts}
-                                    onClick={this.setCurrentContact}
-                                />
-                            )
-                    }
-                </div>
+                        }
+                    </Motion>
+                }
             </div>
-        )
+        );
     }
 };
 
