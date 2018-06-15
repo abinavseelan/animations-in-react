@@ -21,7 +21,7 @@ const AnimatingCards = () => (
         }
       ]}
       styles={prevStyles => prevStyles.map((_, index) => {
-        return index === 0
+        return index === prevStyles.length - 1
           ? ({
             opacity: spring(0, {
               stiffness: 40
@@ -31,8 +31,8 @@ const AnimatingCards = () => (
             }),
           })
           : ({
-            opacity: prevStyles[index - 1].opacity / 1,
-            x: prevStyles[index - 1].x / 1.25
+            opacity: prevStyles[index + 1].opacity / 1,
+            x: prevStyles[index + 1].x / 1.25
           })
       })}
     >
