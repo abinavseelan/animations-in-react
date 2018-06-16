@@ -4,32 +4,17 @@ import faStream from '@fortawesome/fontawesome-free-solid/faStream'
 
 import { Motion, spring } from 'react-motion';
 
-const AnimatingCard = () => (
-    <Motion
-        defaultStyle={{
-            x: 0,
-            opacity: 1
-        }}
-        style={{
-            x: spring(window.innerWidth, {
-                stiffness: 20,
-            }),
-            opacity: spring(0)
-        }}
-    >
-    {
-        (interpolatedStyle) => (
-            <div
-                style={{
-                    transform: `translateX(${interpolatedStyle.x}px)`,
-                    opacity: interpolatedStyle.opacity
-                }}
-                className="card"
-            />
-        )
-    }
-    </Motion>
-)
+const initialStyle = {
+    x: 0,
+    opacity: 1
+}
+
+const finalStyle = {
+    x: spring(window.innerWidth, {
+        stiffness: 20,
+    }),
+    opacity: spring(0)
+}
 
 class Demo2 extends Component {
     constructor(props) {
@@ -55,15 +40,26 @@ class Demo2 extends Component {
             <div className="demo-3-bg">
                 {
                     [0, 1, 2].map(cardNumber => (
-                        this.state.dismissed
-                            ? (
-                                <AnimatingCard key={cardNumber} />
-                            )
-                            : (
-                                <div className="card" key={cardNumber} />
-                            )
+                        <Motion
+                            defaultStyle={initialStyle}
+                            style={this.state.dismissed ? finalStyle : initialStyle}
+                        >
+                            {
+                                (interpolatedStyle) => (
+                                    <div
+                                        className="card"
+                                        style={{
+                                            transform: `translateX(${interpolatedStyle.x}px)`,
+                                            opacity: interpolatedStyle.opacity
+                                        }}
+                                        className="card"
+                                        key={cardNumber}
+                                    />
+                                )
+                            }
+                        </Motion>
                     ))
-                    
+
                 }
                 <button
                     onClick={this.dismiss}
